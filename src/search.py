@@ -5,22 +5,81 @@ from langchain_core.runnables import chain
 from langchain.prompts import PromptTemplate
 
 PROMPT_TEMPLATE = """
-Voce é um especialista em respoder sobre {mastery} baseado no contexto abaixo
+CONTEXTO:
+{rag_data}
 
-CONTEXTO: {rag_data}
+REGRAS:
+- Responda SOMENTE com base no CONTEXTO fornecido.
+- NUNCA faça inferências, deduções ou interpretações.
+- NUNCA conte ou calcule quantidades baseado em padrões visuais.
+- NUNCA assuma que dados em uma lista representam "clientes" ou "quantidades".
+- Se a informação não estiver EXPLICITAMENTE declarada no CONTEXTO, responda:
+  "Não tenho informações necessárias para responder sua pergunta."
+- Nunca invente ou use conhecimento externo.
+- Nunca produza opiniões ou interpretações além do que está escrito.
 
-IMPORTANTE:
-- voce nao fala que sabe sobre o contexto, voce responde somente a pergunta do usuario com os dados do contexto que foi passado
-- se a informação nao tem no contexto informado, RESPONDA SOMENTE: "Não tenho informações necessárias para responder sua pergunta." e nenhuma informação adicional
+<important>O QUE NÃO FAZER:</important>
+- NÃO conte itens em listas
+- NÃO calcule totais ou médias
+- NÃO assuma que empresas listadas são "clientes"
+- NÃO faça inferências sobre relacionamentos entre dados
+- NÃO interprete anos como "quantidade de clientes"
 
-RESPONDA A PERGUNTA DO USUÁRIO: {user_question}
+<important>EXEMPLOS DE PERGUNTAS FORA DO CONTEXTO:</important>
+
+Pergunta: "Quantos clientes temos em 2024?"
+Resposta: "Não tenho informações necessárias para responder sua pergunta."
+Explicação: A lista de empresas não especifica quantos são "clientes" nem fornece contagem.
+
+Pergunta: "Qual é a capital da França?"
+Resposta: "Não tenho informações necessárias para responder sua pergunta."
+
+Pergunta: "Você acha isso bom ou ruim?"
+Resposta: "Não tenho informações necessárias para responder sua pergunta."
+
+Pergunta: "Conte quantas empresas têm no nome 'Vanguarda'"
+Resposta: "Não tenho informações necessárias para responder sua pergunta."
+Explicação: Não posso contar ou fazer cálculos baseado no texto fornecido.
+
+INSTRUÇÃO FINAL:
+Analise APENAS o que está EXPLICITAMENTE declarado no CONTEXTO.
+Se a pergunta requerer contagem, cálculo, inferência ou interpretação
+que não esteja claramente expressa no texto, responda:
+"Não tenho informações necessárias para responder sua pergunta."
+
+PERGUNTA DO USUÁRIO:
+{user_question}
+
+RESPONDA A "PERGUNTA DO USUÁRIO"
 """
 
 @chain
 def setup_rag_chain(rag_dict: dict) -> dict:
-    return PromptTemplate(
-        input_variables=["rag_data", "user_question", "mastery"],
+    prompt = PromptTemplate(
+        input_variables=["rag_data", "user_question"],
         template=PROMPT_TEMPLATE)
+
+    # Formatar o prompt com os dados reais
+    formatted_prompt = prompt.format(
+        rag_data=rag_dict.get("rag_data", ""),
+        user_question=rag_dict.get("user_question", "")
+    )
+    
+    # Debug técnico - exibir o prompt completo que será enviado para o modelo
+    print(f"[RAG] Prompt formatado - {len(formatted_prompt)} chars")
+    print(f"[RAG] Dados processados: {len(rag_dict.get('rag_data', ''))} chars")
+    print(f"[RAG] Variáveis encontradas: {list(rag_dict.keys())}")
+    print(f"\n{'='*80}")
+    print("PROMPT COMPLETO QUE SERÁ ENVIADO PARA O MODELO:")
+    print(f"{'='*80}")
+    print(formatted_prompt)
+    print(f"{'='*80}")
+    
+    return {
+        "prompt": formatted_prompt,
+        "rag_data": rag_dict.get("rag_data"),
+        "user_question": rag_dict.get("user_question")
+    }
 
 @chain
 def rag_result(user_input_dict: dict) -> dict:
