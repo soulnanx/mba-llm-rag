@@ -36,7 +36,7 @@ make test-explicita       # Testa pergunta com informação explícita
 Primeiro, inicie os serviços do banco de dados PostgreSQL com pgvector:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Este comando irá:
@@ -79,8 +79,16 @@ make test-explicita       # Testa pergunta com informação explícita
 ```
 
 #### **Opção 2: Execução manual**
-- `src/ingest.py` - Para ingerir documentos
-- `src/chat.py` - Para interface de chat
+```bash
+# Subir o banco de dados:
+docker compose up -d
+
+# Executar ingestão do PDF:
+python src/ingest.py
+
+# Rodar o chat:
+python src/chat.py
+```
 
 ## 🎯 **Melhorias Implementadas no Sistema RAG**
 
@@ -158,20 +166,20 @@ Cada documento processado inclui metadados importantes:
 Para parar os serviços Docker:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 Para remover também os volumes de dados:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ## 🚀 **Uso Rápido - Comandos Essenciais**
 
 ```bash
 # 1. Iniciar o banco de dados
-docker-compose up -d
+docker compose up -d
 
 # 2. Configurar ambiente Python
 python3 -m venv venv
@@ -186,7 +194,7 @@ make test-inferencia        # Testar pergunta que requer inferência
 make test-explicita         # Testar pergunta com informação explícita
 
 # 4. Parar serviços
-docker-compose down
+docker compose down
 ```
 
 ## 📚 **Exemplos de Uso**
