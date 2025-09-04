@@ -2,6 +2,25 @@
 
 Este projeto implementa um sistema de busca semântica com RAG (Retrieval-Augmented Generation) utilizando PostgreSQL com extensão pgvector.
 
+## 🚀 **FACILITE SEU DESENVOLVIMENTO COM O MAKEFILE!**
+
+**Temos um Makefile completo que facilita todas as operações!** Use `make help` para ver todos os comandos disponíveis.
+
+```bash
+# Ver todos os comandos disponíveis
+make help
+
+# Executar ingestão de documentos
+make ingest
+
+# Executar chat interativo
+make run
+
+# Testar perguntas específicas
+make test-inferencia      # Testa pergunta que requer inferência
+make test-explicita       # Testa pergunta com informação explícita
+```
+
 ## Pré-requisitos
 
 - **Docker e Docker Compose**: Certifique-se de ter o Docker e Docker Compose instalados em sua máquina
@@ -17,7 +36,7 @@ Este projeto implementa um sistema de busca semântica com RAG (Retrieval-Augmen
 Primeiro, inicie os serviços do banco de dados PostgreSQL com pgvector:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Este comando irá:
@@ -46,8 +65,45 @@ pip install -r requirements.txt
 
 Após configurar o banco de dados e instalar as dependências, você pode executar os scripts do projeto:
 
-- `src/ingest.py` - Para ingerir documentos
-- `src/chat.py` - Para interface de chat
+#### **Opção 1: Usando o Makefile (RECOMENDADO)**
+```bash
+# Ingerir documentos
+make ingest
+
+# Executar chat interativo
+make run
+
+# Testar funcionalidades específicas
+make test-inferencia      # Testa pergunta que requer inferência
+make test-explicita       # Testa pergunta com informação explícita
+```
+
+#### **Opção 2: Execução manual**
+```bash
+# Subir o banco de dados:
+docker compose up -d
+
+# Executar ingestão do PDF:
+python src/ingest.py
+
+# Rodar o chat:
+python src/chat.py
+```
+
+## 🎯 **Melhorias Implementadas no Sistema RAG**
+
+### **Prompt Robusto e Consistente**
+O sistema agora possui um prompt extremamente robusto que previne interpretações incorretas:
+
+- **✅ Regras Claras**: Instruções específicas sobre o que NÃO fazer
+- **✅ Exemplos Concretos**: Casos de uso com explicações detalhadas
+- **✅ Consistência Total**: Respostas consistentes para perguntas similares
+- **✅ Prevenção de Inferências**: Evita interpretações incorretas de dados estruturados
+
+### **Comportamento Validado**
+- **Perguntas que requerem inferência**: Responde consistentemente "Não tenho informações necessárias"
+- **Perguntas com informações explícitas**: Extrai e responde corretamente
+- **Debug completo**: Logs detalhados para facilitar desenvolvimento e troubleshooting
 
 ## Decisões de Arquitetura
 
@@ -95,13 +151,14 @@ Cada documento processado inclui metadados importantes:
 
 - `src/` - Código fonte da aplicação
   - `ingest.py` - Script de ingestão de documentos
-  - `search.py` - Sistema de busca semântica
+  - `search.py` - Sistema de busca semântica com prompt robusto
   - `chat.py` - Interface de chat com RAG
 - `src/pdf/` - Documentos para processamento
   - `chunk/` - PDFs para processamento por chunks
   - `page/` - PDFs para processamento por páginas
 - `docker-compose.yml` - Configuração dos serviços Docker
 - `requirements.txt` - Dependências Python
+- `Makefile` - **Comandos automatizados para facilitar o desenvolvimento**
 - `document.pdf` - Documento de exemplo para ingestão
 
 ## Parando os serviços
@@ -109,11 +166,51 @@ Cada documento processado inclui metadados importantes:
 Para parar os serviços Docker:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 Para remover também os volumes de dados:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
+
+## 🚀 **Uso Rápido - Comandos Essenciais**
+
+```bash
+# 1. Iniciar o banco de dados
+docker compose up -d
+
+# 2. Configurar ambiente Python
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Executar com Makefile (RECOMENDADO)
+make help                    # Ver todos os comandos
+make ingest                  # Ingerir documentos
+make run                     # Chat interativo
+make test-inferencia        # Testar pergunta que requer inferência
+make test-explicita         # Testar pergunta com informação explícita
+
+# 4. Parar serviços
+docker compose down
+```
+
+## 📚 **Exemplos de Uso**
+
+### **Teste de Consistência**
+```bash
+# Execute 3 vezes para validar consistência
+make test-inferencia
+make test-inferencia
+make test-inferencia
+```
+
+### **Teste de Extração de Informações**
+```bash
+# Testar extração de informações explícitas
+make test-explicita
+```
+
+**O Makefile torna o desenvolvimento muito mais eficiente e profissional!** 🎯
