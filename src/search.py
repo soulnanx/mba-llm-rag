@@ -66,14 +66,14 @@ def setup_rag_chain(rag_dict: dict) -> dict:
     )
     
     # Debug técnico - exibir o prompt completo que será enviado para o modelo
-    print(f"[RAG] Prompt formatado - {len(formatted_prompt)} chars")
-    print(f"[RAG] Dados processados: {len(rag_dict.get('rag_data', ''))} chars")
-    print(f"[RAG] Variáveis encontradas: {list(rag_dict.keys())}")
-    print(f"\n{'='*80}")
-    print("PROMPT COMPLETO QUE SERÁ ENVIADO PARA O MODELO:")
-    print(f"{'='*80}")
-    print(formatted_prompt)
-    print(f"{'='*80}")
+    # print(f"[RAG] Prompt formatado - {len(formatted_prompt)} chars")
+    # print(f"[RAG] Dados processados: {len(rag_dict.get('rag_data', ''))} chars")
+    # print(f"[RAG] Variáveis encontradas: {list(rag_dict.keys())}")
+    # print(f"\n{'='*80}")
+    # print("PROMPT COMPLETO QUE SERÁ ENVIADO PARA O MODELO:")
+    # print(f"{'='*80}")
+    # print(formatted_prompt)
+    # print(f"{'='*80}")
     
     return {
         "prompt": formatted_prompt,
