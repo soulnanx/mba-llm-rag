@@ -17,16 +17,9 @@ def main():
 
     # Construir a cadeia sem a LLM no final
     chain = rag_result | setup_rag_chain
-    #print(f"Setup RAG Chain: {setup_rag_chain}")
-    
-    #print(f"\n🔍 Processando pergunta: {user_input}")
     
     # Executar a cadeia (sem a LLM)
     result = chain.invoke({"user_question": user_input})
-    
-    # Visão do usuário - resultado final
-    # print(f"\n📊 Contexto encontrado: {len(result['rag_data'])} caracteres")
-    # print(f"📝 Prompt gerado: {len(result['prompt'])} caracteres")
     
     # Enviar o prompt formatado para a LLM
     response_content = llm.invoke(result["prompt"])
